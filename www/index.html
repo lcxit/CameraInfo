@@ -91,7 +91,7 @@
     function capturePhotoEdit() {
       // Take picture using device camera, allow edit, and retrieve image as base64-encoded string  
       navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 20, allowEdit: true,
-        destinationType: destinationType.DATA_URL });
+        destinationType: destinationType.FILE_URI });
     }
 
     // A button will call this function
@@ -109,10 +109,41 @@
       alert('Failed because: ' + message);
     }
 
+	var sourceType;
+	
+	function onConfirm(buttonIndex) {
+	  if(buttonIndex == 1) {
+		// User wants to make a photo using the camera
+		sourceType = Camera.PictureSourceType.CAMERA;
+		captureImage();
+	  } else if (buttonIndex == 2) {
+		// User wants to select a photo from the gallery
+		sourceType = Camera.PictureSourceType.PHOTOLIBRARY;
+	  } else {
+		// cancelled
+	  }
+	}
+	
+	function captureImage() {
+	  navigator.camera.getPicture(
+		onSuccess,
+		onFail,
+		{ quality:60,
+		  allowEdit:true, // ignored by Android
+		  destinationType:Camera.DestinationType.DATA_URL, //base64
+		  encodingType:Camera.EncodingType.JPEG,
+		  sourceType:sourceType,
+		  targetWidth:160,
+		  targetHeight:160
+		}
+	  );
+	}
     </script>
   </head>
   <body>
     <button onclick="capturePhoto();">Capture Photo</button> <br>
+	<button onclick="onConfirm();">onConfirm</button> <br>
+	<button onclick="captureImage();">captureImage</button> <br>	
     <button onclick="capturePhotoEdit();">Capture Editable Photo</button> <br>
     <button onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Library</button><br>
     <button onclick="getPhoto(pictureSource.SAVEDPHOTOALBUM);">From Photo Album</button><br>
