@@ -21,7 +21,7 @@
   <head>
     <title>Capture Photo</title>
 
-    <script type="text/javascript" charset="utf-8" src="cordova-x.x.x.js"></script>
+    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
     <script type="text/javascript" charset="utf-8">
 
     var pictureSource;   // picture source
@@ -36,6 +36,7 @@
     function onDeviceReady() {
         pictureSource=navigator.camera.PictureSourceType;
         destinationType=navigator.camera.DestinationType;
+		debug.log('Device Ready');
     }
 
     // Called when a photo is successfully retrieved
@@ -56,7 +57,9 @@
       // The inline CSS rules are used to resize the image
       //
       smallImage.src = "data:image/jpeg;base64," + imageData;
+	  debug.log('Photo Successfully Captured: ' + imageData);
     }
+
 
     // Called when a photo is successfully retrieved
     //
@@ -83,7 +86,7 @@
     function capturePhoto() {
       // Take picture using device camera and retrieve image as base64-encoded string
       navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 50,
-        destinationType: destinationType.FILE_URI });
+        destinationType: destinationType.DATA_URL  });
     }
 
     // A button will call this function
@@ -91,7 +94,7 @@
     function capturePhotoEdit() {
       // Take picture using device camera, allow edit, and retrieve image as base64-encoded string  
       navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 20, allowEdit: true,
-        destinationType: destinationType.FILE_URI });
+        destinationType: destinationType.DATA_URL });
     }
 
     // A button will call this function
@@ -111,39 +114,11 @@
 
 	var sourceType;
 	
-	function onConfirm(buttonIndex) {
-	  if(buttonIndex == 1) {
-		// User wants to make a photo using the camera
-		sourceType = Camera.PictureSourceType.CAMERA;
-		captureImage();
-	  } else if (buttonIndex == 2) {
-		// User wants to select a photo from the gallery
-		sourceType = Camera.PictureSourceType.PHOTOLIBRARY;
-	  } else {
-		// cancelled
-	  }
-	}
-	
-	function captureImage() {
-	  navigator.camera.getPicture(
-		onSuccess,
-		onFail,
-		{ quality:60,
-		  allowEdit:true, // ignored by Android
-		  destinationType:Camera.DestinationType.DATA_URL, //base64
-		  encodingType:Camera.EncodingType.JPEG,
-		  sourceType:sourceType,
-		  targetWidth:160,
-		  targetHeight:160
-		}
-	  );
-	}
+
     </script>
   </head>
   <body>
     <button onclick="capturePhoto();">Capture Photo</button> <br>
-	<button onclick="onConfirm();">onConfirm</button> <br>
-	<button onclick="captureImage();">captureImage</button> <br>	
     <button onclick="capturePhotoEdit();">Capture Editable Photo</button> <br>
     <button onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Library</button><br>
     <button onclick="getPhoto(pictureSource.SAVEDPHOTOALBUM);">From Photo Album</button><br>
